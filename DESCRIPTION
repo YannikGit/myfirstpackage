@@ -2,8 +2,8 @@ Package: myfirstpackage
 Title: ProjektPraktikum
 Version: 0.0.0.9000
 Authors@R: 
-    person("Yannik", "Lang", , "yannik-lang@gmx.net", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+    person("Yannik", "Lang", , "yannik-lang@gmx.net", role = c("aut", "cre")
+           ))
 Description: What the package does (one paragraph).
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
