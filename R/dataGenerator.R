@@ -32,3 +32,4 @@ X = matrix(runif(100*50, -1, 1), 100, 50)
 Y = rnorm(100)
 data = data.frame(Y,X)
 #cor(X,Y)
+
