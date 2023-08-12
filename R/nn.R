@@ -5,31 +5,36 @@ source("C:/Users/Besitzer/Documents/myfirstpackage/R/mean_slopes.R")
 
 library(cito)
 
-rep = 500
-out = rep(NA, rep)
-n_predictors <- 50
-eff <- matrix(NA, nrow = rep, ncol = n_predictors)
-Width = 7
+n = 500
+data <- data_generator(n)
 
-for(i in 1:rep){
+repititions = 5
+out = rep(NA, repititions)
+n_predictors <- 3
 
-  nn.fit <- dnn(Y~., data = data,
-               epochs = 1, lr = 0.000000000000001, hidden = c(Width),
-               plot = F)
 
-  eff[i, ] = diag(marginalEffects(nn.fit, interactions = FALSE)$mean)
+for (w in 1:300) {
+  for(d in 1:5) {
+    eff <- matrix(NA, nrow = repititions, ncol = n_predictors)
+    for(i in 1:repititions){
 
-  out[i] = mean(predict(nn.fit))
+      nn.fit <- dnn(Y~., data = data,
+                    epochs = 1, lr = 0.000000000000001, hidden = c(rep(w, d)),
+                    plot = F)
+
+      eff[i, ] = diag(marginalEffects(nn.fit, interactions = FALSE)$mean)
+
+      out[i] = mean(predict(nn.fit))
+    }
+
+    store_mean_slope(slope_data = eff, predict_data = mean(out), depth = d, width = w)
+
+    save(out, file = paste0("out_", d, "_", w, ".Rdata"))
+
+    save(eff, file = paste0("eff_", d, "_", w, ".Rdata"))
+  }
+
 }
 
-hist(out)
-
-store_mean_slope(mean_slope = mean(eff, na.rm = TRUE), depth = 1, width = Width)
-
-save(out, file = "nn_1_7.Rdata")
-
-save(eff, file = "eff_1_7.Rdata")
-
-load("nn_1_7.Rdata")
-
 load("results.Rdata")
+load("eff_5_28.Rdata")
