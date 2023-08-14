@@ -12,9 +12,10 @@ repititions = 5
 out = rep(NA, repititions)
 n_predictors <- 3
 
+results <- initialize_results()
 
-for (w in 1:300) {
-  for(d in 1:5) {
+for (w in 1:10) {
+  for(d in 1:3) {
     eff <- matrix(NA, nrow = repititions, ncol = n_predictors)
     for(i in 1:repititions){
 
@@ -27,7 +28,7 @@ for (w in 1:300) {
       out[i] = mean(predict(nn.fit))
     }
 
-    store_mean_slope(slope_data = eff, predict_data = mean(out), depth = d, width = w)
+    store_mean_slope(df = results, slope_data = eff, predict_data = mean(out), depth = d, width = w)
 
     save(out, file = paste0("out_", d, "_", w, ".Rdata"))
 
@@ -37,4 +38,4 @@ for (w in 1:300) {
 }
 
 load("results.Rdata")
-load("eff_5_28.Rdata")
+load("eff_2_49.Rdata")
