@@ -7,3 +7,6 @@ data <- data_generator(n)
 
 lm <- lm(Y ~ X1 + X2 + X3, data = data)
 print(lm)
+
+lmx <- lm(X1 ~ X2 + X3 + Y, data = data)
+print(lmx)
