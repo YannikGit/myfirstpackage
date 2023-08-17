@@ -1,28 +1,43 @@
 set.seed(123)
 source("C:/Users/Besitzer/Documents/myfirstpackage/R/AME.R")
-source("C:/Users/Besitzer/Documents/myfirstpackage/R/dataGenerator.R")
+source("C:/Users/Besitzer/Documents/myfirstpackage/R/dataGenerator_Max.R")
 source("C:/Users/Besitzer/Documents/myfirstpackage/R/mean_slopes.R")
 
 library(cito)
 library(dplyr)
+library(fields)
 
 results <- data.frame(hidden = numeric(),
                       X1_slope = numeric(),
                       X2_slope = numeric(),
                       X3_slope = numeric(),
+                      X4_slope = numeric(),
                       X1_X2_variance = numeric(),
                       X1_X3_variance = numeric(),
+                      X1_X4_variance = numeric(),
                       X2_X3_variance = numeric(),
+                      X2_X4_variance = numeric(),
+                      X3_X4_variance = numeric(),
                       meanPredict = numeric())
 
-n = 500
-data <- data_generator(n)
-repititions = 500
-n_predictors <- 3
+predictions <- data.frame(hidden = numeric(), Predictions = numeric())
+slopes <- data.frame(hidden = numeric(), Slopes = numeric())
 
 
-for (w in 1:300) {
-  for(d in 1:5) {
+data <- simulate(r=0.9, n = 500, effs = c(1.0, 0.0, 1.0, 0.0))
+
+
+
+w_vektor = c(numeric())
+for (j in 1:15){
+  w_vektor[j] = trunc(exp(j/2.6))
+}
+
+repititions = 100
+n_predictors <- 4
+
+for (w in w_vektor) {
+  for(d in 1:10) {
     eff <- matrix(NA, nrow = repititions, ncol = n_predictors)
     out = rep(NA, repititions)
     for(i in 1:repititions){
@@ -36,25 +51,37 @@ for (w in 1:300) {
       out[i] = mean(predict(nn.fit))
       }
 
-#    store_mean_slope(slope_data = eff, predict_data = mean(out), depth = d, width = w)
-    new_row <- data.frame(hidden = paste("Depth:", d, "Width:", w),
+    results_new_row <- data.frame(hidden = paste("Depth:", d, "Width:", w),
                         X1_slope = mean(eff[ ,1]),
                         X2_slope = mean(eff[ ,2]),
-                        X3_slope = mean(eff[, 3]),
+                        X3_slope = mean(eff[ ,3]),
+                        X4_slope = mean(eff[ ,4]),
                         X1_X2_variance = var(eff[ ,1], y = eff[ ,2]),
                         X1_X3_variance = var(eff[ ,1], y = eff[ ,3]),
+                        X1_X4_variance = var(eff[ ,1], y = eff[ ,4]),
                         X2_X3_variance = var(eff[ ,2], y = eff[ ,3]),
+                        X2_X4_variance = var(eff[ ,2], y = eff[ ,4]),
+                        X3_X4_variance = var(eff[ ,3], y = eff[ ,4]),
                         meanPredict = out)
-    results = rbind(results, new_row)
 
-    save(out, file = paste0("out_", d, "_", w, ".Rdata"))
+    results = rbind(results, results_new_row)
 
-    save(eff, file = paste0("eff_", d, "_", w, ".Rdata"))
+    predictions_new_row <- data.frame(hidden = paste("Depth:", d, "Width:", w), Predictions = out)
+
+    predictions = rbind(predictions, predictions_new_row)
+
+    slopes_new_row <- data.frame(hidden = paste("Depth:", d, "Width:", w), Slopes = eff)
+
+    slopes = rbind(slopes, slopes_new_row)
+
 
     }
 }
 
+
 results <- results[!duplicated(results$hidden), ]
 
-save(results, file = "results.Rdata")
-load("results.Rdata")
+save(results, file = "untrained_results.Rdata")
+save(slopes, file = "untrained_slopes.Rdata")
+save(predictions, file = "untrained_predictions.Rdata")
+

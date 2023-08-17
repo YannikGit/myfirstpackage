@@ -42,7 +42,7 @@ for (w in w_vektor) {
 
       nn.fit <- dnn(Y~., data = data,
                     epochs = 300, lr = 0.01, hidden = c(rep(w, d)),
-                    plot = F)
+                    plot = F, early_stopping = 5)
 
       eff[i, ] = diag(marginalEffects(nn.fit, interactions = FALSE)$mean)
 
