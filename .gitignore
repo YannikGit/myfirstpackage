@@ -4,3 +4,9 @@
 eff_1_2.Rdata
 *.Rdata
 *.Rdata
+*.png
+R/Auswertung.R
+R/ImagePlots.R
+R/lm.R
+.Rhistory
+.Rhistory
